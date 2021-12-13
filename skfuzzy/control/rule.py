@@ -306,15 +306,15 @@ class Rule(object):
             graph = nx.compose(graph, c.term.parent.graph)
         return graph
 
-    def view(self):
+    def view(self, ax=None):
         """
         Show a visual representation of this Rule.
         """
-        return ControlSystemVisualizer(self).view()
+        return ControlSystemVisualizer(self, ax=ax).view()
 
-    def view_n(self):
+    def view_n(self, ax=None):
         """
         Show a visual network representation of this Rule.
         To run this all names of the Membership functions needs to unique.
         """
-        return ControlSystemVisualizer(self).view_n()
+        return ControlSystemVisualizer(self, ax=ax).view_n()

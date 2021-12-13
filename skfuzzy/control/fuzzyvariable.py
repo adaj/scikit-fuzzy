@@ -7,7 +7,7 @@ import numpy as np
 
 from .term import Term
 from .visualization import FuzzyVariableVisualizer
-from ..membership import trimf
+from ..membership import trimf, smf, zmf
 
 
 class FuzzyVariable(object):
@@ -119,13 +119,13 @@ class FuzzyVariable(object):
     def __iter__(self):
         return iter(self.terms)
 
-    def view(self, *args, **kwargs):
+    def view(self, ax=None, *args, **kwargs):
         """""" + FuzzyVariableVisualizer.view.__doc__
-        fig, ax = FuzzyVariableVisualizer(self).view(*args, **kwargs)
-        fig.show()
+
+        ax = FuzzyVariableVisualizer(self, ax).view(*args, **kwargs)
 
     def automf(self, number=5, variable_type='quality', names=None,
-               invert=False):
+               invert=False, zs=True):
         """
         Automatically populate the universe with membership functions.
 
@@ -225,4 +225,12 @@ class FuzzyVariable(object):
 
         # Repopulate
         for name, abc in zip(names, abcs):
-            self[name] = trimf(self.universe, abc)
+            if zs and name==names[0]:
+                print(111, abc)
+                self[name] = zmf(self.universe, abc[1], abc[2])
+            elif zs and name==names[-1]:
+                print(-111, abc)
+                self[name] = smf(self.universe, abc[0], abc[1])
+            else:
+                print(000, abc)
+                self[name] = trimf(self.universe, abc)

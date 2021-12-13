@@ -23,7 +23,7 @@ class FuzzyVariableVisualizer(object):
         Figure object containing the visualization.
     """
 
-    def __init__(self, fuzzy_var):
+    def __init__(self, fuzzy_var, ax, **kwargs):
         """
         Initialize the fuzzy variable plot.
 
@@ -43,8 +43,10 @@ class FuzzyVariableVisualizer(object):
         else:
             raise ValueError("`FuzzyVariableVisualizer` can only be called "
                              "with a `FuzzyVariable` or a `Term`.")
-
-        self.fig, self.ax = plt.subplots()
+        if ax is None:
+            self.fig, self.ax = plt.subplots(**kwargs)
+        else:
+            self.ax = ax
         self.plots = {}
 
     def view(self, sim=None, *args, **kwargs):
@@ -111,10 +113,11 @@ class FuzzyVariableVisualizer(object):
                 if y < 0.1:
                     y = 1.
 
-                self.ax.plot([crisp_value] * 2, [0, y],
-                             color='k', lw=3, label='crisp value')
+                plt.plot([crisp_value] * 2, [0, y],
+                         color='k', lw=3, label='crisp value',
+                         ax=self.ax)
 
-        return self.fig, self.ax
+        return self.ax
 
     def _init_plot(self):
         # Formatting: limits
@@ -155,7 +158,7 @@ class ControlSystemVisualizer(object):
     """
     Visualize a control system with Matplotlib and NetworkX.
     """
-    def __init__(self, control_system):
+    def __init__(self, control_system, ax):
         """
         Initialization method for the ControlSystemVisualizer.
 
@@ -169,7 +172,7 @@ class ControlSystemVisualizer(object):
         """
         self.ctrl = control_system
 
-        self.fig, self.ax = plt.subplots()
+        self.ax = ax
 
     def view(self):
         """
@@ -190,7 +193,7 @@ class ControlSystemVisualizer(object):
         inline.
         """
         nx.draw(self.ctrl.graph, ax=self.ax)
-        return self.fig, self.ax
+        return self.ax
 
     def view_n(self):
         """
@@ -233,4 +236,4 @@ class ControlSystemVisualizer(object):
             nx.draw_networkx(graph, node_color=colors)
         except ValueError:
             nx.draw(self.ctrl.graph, ax=self.ax)
-        return self.fig, self.ax
+        return self.ax
